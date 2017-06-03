@@ -15,6 +15,7 @@ class Xsane < Formula
   depends_on "pkg-config" => :build
   depends_on "gtk+"
   depends_on "sane-backends"
+  depends_on "little-cms" => :recommended # Needed for device colour profiles
 
   # Needed to compile against libpng 1.5, Project appears to be dead.
   patch :p0 do
@@ -23,7 +24,9 @@ class Xsane < Formula
   end
 
   def install
-    system "./configure", "--prefix=#{prefix}"
+    args = ["--prefix=#{prefix}"]
+    args << "--disable-lcms" if build.without?("little-cms")
+    system "./configure", *args
     system "make", "install"
   end
 
